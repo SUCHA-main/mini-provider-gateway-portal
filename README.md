@@ -72,7 +72,9 @@ curl http://localhost:3100/v1/chat/completions \
 
 ## Screenshots
 
-<!-- TODO: Add screenshots -->
+| Dashboard | Providers | Logs |
+|-----------|-----------|------|
+| ![Dashboard](docs/images/dashboard.png) | ![Providers](docs/images/providers.png) | ![Logs](docs/images/logs.png) |
 
 ## Roadmap
 

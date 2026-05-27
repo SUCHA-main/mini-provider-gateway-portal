@@ -75,6 +75,12 @@ OPENAI_API_KEY=mpg_YOUR_CONSUMER_KEY
 OPENAI_MODEL=qwen2.5:3b
 ```
 
+## 项目截图
+
+| Dashboard | Providers | Logs |
+|-----------|-----------|------|
+| ![Dashboard](docs/images/dashboard.png) | ![Providers](docs/images/providers.png) | ![Logs](docs/images/logs.png) |
+
 ## 详细文档
 
 - [架构说明](docs/ARCHITECTURE.md)
