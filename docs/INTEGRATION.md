@@ -2,7 +2,7 @@
 
 ## OpenAI SDK Compatible
 
-This gateway is fully compatible with OpenAI SDK. Just change the base URL and API key.
+This gateway supports the OpenAI SDK's basic non-streaming chat-completions flow. Change the base URL and API key, and keep requests within the supported subset.
 
 ### Environment Variables
 
@@ -67,33 +67,21 @@ To use this gateway as the AI provider for ai-wechat-digest-mvp:
 
 ```bash
 # In ai-wechat-digest-mvp/.env
-AI_PROVIDER=openai_compatible
-OPENAI_BASE_URL=http://localhost:3100/v1
-OPENAI_API_KEY=mpg_your_consumer_key
-OPENAI_MODEL=mimo-v2.5-pro
+AI_PROVIDER=deepseek
+AI_API_BASE_URL=http://localhost:3100/v1
+AI_API_KEY=mpg_your_consumer_key
+AI_MODEL=mimo-v2.5-pro
 ```
 
 3. Do NOT modify ai-wechat-digest-mvp source code
 
 ## go-websocket-chatroom Integration
 
-For AI-powered chat features in go-websocket-chatroom:
-
-```bash
-# In go-websocket-chatroom/.env
-AI_BASE_URL=http://localhost:3100/v1
-AI_API_KEY=mpg_your_consumer_key
-AI_MODEL=qwen2.5:3b
-```
+The current go-websocket-chatroom implementation calls Ollama's `/api/chat` shape directly. It cannot use this gateway's OpenAI-compatible endpoint through environment variables alone; a small adapter/code change would be required.
 
 ## labelhub-ai-mvp Integration
 
-```bash
-# In labelhub-ai-mvp/.env
-OPENAI_BASE_URL=http://localhost:3100/v1
-OPENAI_API_KEY=mpg_your_consumer_key
-OPENAI_MODEL=qwen2.5:3b
-```
+The current labelhub-ai-mvp uses a rule-driven Mock AI reviewer and does not implement an external provider client. Gateway integration is a future extension, not a configuration-only step.
 
 ## Custom Application
 
@@ -112,3 +100,5 @@ For any application that supports OpenAI-compatible API:
 - Each application should have its own consumer key for tracking
 - Check the Logs panel in admin UI to monitor usage
 - If a provider is down, check provider health in the Providers panel
+- Supported request fields are `model`, `messages`, `temperature`, and `max_tokens`
+- Streaming, tools/function calling, embeddings, retries/fallback, and the rest of the OpenAI API surface are not implemented

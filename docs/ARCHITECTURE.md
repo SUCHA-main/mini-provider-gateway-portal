@@ -4,7 +4,7 @@
 
 Mini Provider Gateway Portal is a personal AI Provider Gateway that sits between your applications (consumers) and AI providers. It provides:
 
-- Unified OpenAI-compatible API endpoint
+- Basic non-streaming OpenAI-compatible chat-completions endpoint
 - Provider management and health monitoring
 - Consumer key authentication
 - Call logging and analytics
@@ -39,7 +39,7 @@ flowchart LR
 Providers are stored in SQLite with:
 - `type`: Determines which adapter to use
 - `base_url`: Provider API endpoint
-- `api_key`: Stored locally, never exposed via API
+- `api_key`: Stored in plaintext in local SQLite for upstream calls; admin API responses expose only a masked form
 - `enabled`: Toggle providers without deletion
 
 ## Consumer Key Auth
@@ -72,7 +72,7 @@ Each proxy request logs:
 - `model`, `route`, `status`, `http_status`
 - `latency_ms`: Round-trip time
 - `input_tokens`, `output_tokens`, `total_tokens`: From response usage
-- `error_message`: On failure (truncated, no secrets)
+- `error_message`: Sanitized status/network summary on failure; provider response bodies are not stored
 
 ## Database Schema
 

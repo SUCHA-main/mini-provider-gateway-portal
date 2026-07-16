@@ -8,9 +8,9 @@
 
 - 统一管理 Provider（Ollama、OpenAI-compatible）
 - 统一管理 Consumer App 和 Consumer Key
-- 统一代理 `/v1/chat/completions`，兼容 OpenAI SDK
+- 统一代理 `/v1/chat/completions` 的基础非流式子集，可通过 OpenAI SDK 调用
 - 记录调用日志、延迟、Token 用量、失败原因
-- 为 ai-wechat-digest-mvp、go-websocket-chatroom、labelhub-ai-mvp 等项目提供统一接入点
+- 为支持 OpenAI-compatible Chat Completions 的个人应用提供统一接入点
 
 ## 适用场景
 
@@ -24,7 +24,7 @@
 ```bash
 # 克隆并安装
 cd mini-provider-gateway-portal
-npm install
+npm ci
 npm run install:all
 
 # 配置
@@ -37,6 +37,16 @@ npm run dev
 
 - 后端: http://localhost:3100
 - 前端: http://localhost:5176
+
+### Docker
+
+```bash
+cp .env.example .env
+# 使用前替换 ADMIN_TOKEN 占位值
+docker compose up --build
+```
+
+容器会在 `http://localhost:3100` 同时提供管理界面和 API。Compose 将 SQLite 数据保存到本地 `data/` 目录。
 
 ## 端口说明
 
@@ -59,6 +69,13 @@ npm run dev
 3. 前端只显示 masked 形式的 Key（如 `sk-****abcd`）
 4. 后端日志不记录 request body、messages 内容、API Key
 5. Consumer Key 只在创建/轮换时返回明文一次，数据库只保存 hash
+6. Provider API Key 因上游调用需要，会以明文保存在本地 SQLite，但管理 API 只返回 masked 值
+7. 管理接口会校验 `x-admin-token`；前端将 token 保存在 `localStorage`，仅适合个人本地 MVP
+8. 数据库中的限流字段当前未执行，不应宣称已有实际限流
+
+## 兼容范围
+
+当前只支持基础的非流式 Chat Completions，请求字段包括 `model`、`messages`、`temperature` 和 `max_tokens`。暂不支持 streaming、tools/function calling、embeddings、计费、自动重试/故障切换、高可用或完整 OpenAI API。
 
 ## 接入方式
 
@@ -90,4 +107,4 @@ OPENAI_MODEL=qwen2.5:3b
 
 ## 许可证
 
-MIT
+[MIT](LICENSE)

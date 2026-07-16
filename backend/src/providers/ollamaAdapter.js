@@ -24,8 +24,7 @@ export async function callOllama(provider, body) {
     clearTimeout(timer);
 
     if (!resp.ok) {
-      const text = await resp.text().catch(() => '');
-      throw new Error(`Ollama returned ${resp.status}: ${text.slice(0, 200)}`);
+      throw new Error(`Ollama returned HTTP ${resp.status}`);
     }
 
     const ollamaResult = await resp.json();

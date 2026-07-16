@@ -1,10 +1,5 @@
 export async function callProvider(provider, body) {
-  let url = provider.base_url;
-  if (url.endsWith('/v1')) {
-    url = `${url}/chat/completions`;
-  } else {
-    url = `${url}/v1/chat/completions`;
-  }
+  const url = buildProviderUrl(provider.base_url);
 
   const headers = { 'Content-Type': 'application/json' };
   if (provider.api_key) {
@@ -33,12 +28,19 @@ export async function callProvider(provider, body) {
     clearTimeout(timer);
 
     if (!resp.ok) {
-      const text = await resp.text().catch(() => '');
-      throw new Error(`Provider returned ${resp.status}: ${text.slice(0, 200)}`);
+      throw new Error(`Provider returned HTTP ${resp.status}`);
     }
     return await resp.json();
   } catch (err) {
     clearTimeout(timer);
     throw err;
   }
+}
+
+export function buildProviderUrl(baseUrl) {
+  const normalized = String(baseUrl || '').replace(/\/+$/, '');
+  if (normalized.endsWith('/v1')) {
+    return `${normalized}/chat/completions`;
+  }
+  return `${normalized}/v1/chat/completions`;
 }

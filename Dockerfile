@@ -1,16 +1,16 @@
 FROM node:24-alpine AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
 FROM node:24-alpine
-WORKDIR /app
-COPY backend/package*.json ./backend/
-RUN cd backend && npm install --production
-COPY backend/ ./backend/
-COPY --from=frontend-build /app/frontend/dist ./frontend/dist
-COPY .env.example ./.env.example
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm ci --omit=dev
+COPY backend/src ./src
+COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
+COPY .env.example /app/.env.example
 EXPOSE 3100
-CMD ["node", "backend/src/server.js"]
+CMD ["node", "src/server.js"]
